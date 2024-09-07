@@ -1,0 +1,10 @@
+[package]
+name = "game_of_life"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.87"
+crossbeam = "0.8.4"
+crossterm = "0.28.1"
+rand = "0.8.5"
