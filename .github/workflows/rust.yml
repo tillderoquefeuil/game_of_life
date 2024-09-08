@@ -72,6 +72,13 @@ jobs:
           name: game_of_life_binary_windows-latest
           path: ./release/windows/
 
+      - name: ls test
+        run: |
+          ls -la ./release/
+          ls -la ./release/linux/
+          ls -la ./release/macos/
+          ls -la ./release/windows/
+    
       - name: Publish GitHub Release
         uses: ncipollo/release-action@v1
         with:
@@ -84,3 +91,4 @@ jobs:
           draft: false
           prerelease: false
           allowUpdates: true
+          latest: true
