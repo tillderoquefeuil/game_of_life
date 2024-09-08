@@ -80,9 +80,7 @@ jobs:
           body: |
             Automated release for version ${{ github.ref_name }}.
           files: |
-            ./release/linux/game_of_life
-            ./release/macos/game_of_life
-            ./release/windows/game_of_life.exe
+            ./release/**/*
           draft: false
           prerelease: false
           allowUpdates: true
