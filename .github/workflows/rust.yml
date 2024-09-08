@@ -63,7 +63,7 @@ jobs:
         run: |
           mv ./release/game_of_life_binary_ubuntu-latest/game_of_life ./release/game_of_life-ubuntu
           mv ./release/game_of_life_binary_macos-latest/game_of_life ./release/game_of_life-macos
-          mv ./release/game_of_life_binary_windows-latest/game_of_life ./release/game_of_life-windows
+          mv ./release/game_of_life_binary_windows-latest/game_of_life.exe ./release/game_of_life-windows.exe
     
       - name: Publish GitHub Release
         uses: ncipollo/release-action@v1
