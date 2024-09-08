@@ -15,14 +15,15 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]  # Builds for Linux, macOS, and Windows
+        os: [ubuntu-latest]  # Builds for Linux, macOS, and Windows
+        # os: [ubuntu-latest, macos-latest, windows-latest]  # Builds for Linux, macOS, and Windows
         include:
           - os: ubuntu-latest
             extension: ""
-          - os: macos-latest
-            extension: ""
-          - os: windows-latest
-            extension: ".exe"
+          # - os: macos-latest
+          #   extension: ""
+          # - os: windows-latest
+          #   extension: ".exe"
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -56,28 +57,28 @@ jobs:
 
       - name: Download the Linux binary artifact
         uses: actions/download-artifact@v3
-        with:
-          name: game_of_life_binary_ubuntu-latest
-          path: ./release/linux/
 
-      - name: Download the macOS binary artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: game_of_life_binary_macos-latest
-          path: ./release/macos/
+      # - name: Download the Linux binary artifact
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: game_of_life_binary_ubuntu-latest
+      #     path: ./release/linux/
 
-      - name: Download the Windows binary artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: game_of_life_binary_windows-latest
-          path: ./release/windows/
+      # - name: Download the macOS binary artifact
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: game_of_life_binary_macos-latest
+      #     path: ./release/macos/
+
+      # - name: Download the Windows binary artifact
+      #   uses: actions/download-artifact@v3
+      #   with:
+      #     name: game_of_life_binary_windows-latest
+      #     path: ./release/windows/
 
       - name: ls test
         run: |
-          ls -la ./release/
-          ls -la ./release/linux/
-          ls -la ./release/macos/
-          ls -la ./release/windows/
+          ls -la
     
       - name: Publish GitHub Release
         uses: ncipollo/release-action@v1
@@ -87,7 +88,7 @@ jobs:
           body: |
             Automated release for version ${{ github.ref_name }}.
           files: |
-            ./release/**/*
+            ./*
           draft: false
           prerelease: false
           allowUpdates: true
