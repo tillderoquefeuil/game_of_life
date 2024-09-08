@@ -3,8 +3,6 @@ name: Rust
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
 env:
   CARGO_TERM_COLOR: always
@@ -14,8 +12,17 @@ permissions: write-all
 jobs:
   build:
 
-    runs-on: ubuntu-latest
-
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]  # Builds for Linux, macOS, and Windows
+        include:
+          - os: ubuntu-latest
+            extension: ""
+          - os: macos-latest
+            extension: ""
+          - os: windows-latest
+            extension: ".exe"
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -32,13 +39,13 @@ jobs:
       run: mkdir -p release
 
     - name: Copy binary to release directory
-      run: cp target/release/game_of_life ./release/
-
+      run: |
+        cp target/release/game_of_life${{ matrix.extension }} ./release/game_of_life${{ matrix.extension }}
     - name: Upload release asset
       uses: actions/upload-artifact@v3
       with:
-        name: game_of_life_binary
-        path: ./release/game_of_life
+        name: game_of_life_binary_${{ matrix.os }}
+        path: ./release/game_of_life${{ matrix.extension }}
 
   release:
     needs: build
@@ -47,10 +54,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Download the build artifact
+      - name: Download the Linux binary artifact
         uses: actions/download-artifact@v3
         with:
-          name: game_of_life_binary
+          name: game_of_life_binary_ubuntu-latest
+          path: ./release/linux/
+
+      - name: Download the macOS binary artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: game_of_life_binary_macos-latest
+          path: ./release/macos/
+
+      - name: Download the Windows binary artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: game_of_life_binary_windows-latest
+          path: ./release/windows/
 
       - name: Publish GitHub Release
         uses: ncipollo/release-action@v1
@@ -59,6 +79,9 @@ jobs:
           name: ${{ github.ref_name }}
           body: |
             Automated release for version ${{ github.ref_name }}.
-          files: ./game_of_life
+          files: |
+            ./release/linux/game_of_life
+            ./release/macos/game_of_life
+            ./release/windows/game_of_life.exe
           draft: false
           prerelease: false
