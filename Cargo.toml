@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.87"
+clap = { version = "4.5.17", features = ["derive"] }
 crossbeam = "0.8.4"
 crossterm = "0.28.1"
 rand = "0.8.5"

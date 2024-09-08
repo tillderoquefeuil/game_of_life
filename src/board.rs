@@ -61,10 +61,10 @@ impl Board {
         self
     }
 
-    pub fn with_random(mut self) -> Self{
+    pub fn with_random(mut self, prob: f32) -> Self{
         self.current.iter_mut().for_each(|row| {
             row.iter_mut().for_each(|value| {
-                *value = get_random_bool();
+                *value = get_random_bool(prob);
             });
         });
 
@@ -203,7 +203,7 @@ impl Board {
 
 }
 
-fn get_random_bool() -> bool {
+fn get_random_bool(prob: f32) -> bool {
     let mut rng = rand::thread_rng();
-    rng.gen_range(0..100) > 70
+    rng.gen_range(0..100) < (prob*100.0) as i32
 }
