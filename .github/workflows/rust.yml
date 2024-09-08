@@ -59,9 +59,11 @@ jobs:
         with:
           path: ./release/
 
-      - name: ls test
+      - name: rename artifacts
         run: |
-          ls -la ./release
+          mv ./release/game_of_life_binary_ubuntu-latest/game_of_life ./release/game_of_life-ubuntu
+          mv ./release/game_of_life_binary_macos-latest/game_of_life ./release/game_of_life-macos
+          mv ./release/game_of_life_binary_windows-latest/game_of_life ./release/game_of_life-windows
     
       - name: Publish GitHub Release
         uses: ncipollo/release-action@v1
@@ -71,7 +73,7 @@ jobs:
           body: |
             Automated release for version ${{ github.ref_name }}.
           artifacts: |
-            ./release/*
+            ./release/game_of_life-*
           draft: false
           prerelease: false
           allowUpdates: true
