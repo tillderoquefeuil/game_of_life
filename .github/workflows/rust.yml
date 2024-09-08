@@ -75,7 +75,7 @@ jobs:
       - name: Publish GitHub Release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ github.ref_name }}
+          tag: ${{ github.ref_name }}-${{ github.sha }}
           name: ${{ github.ref_name }}
           body: |
             Automated release for version ${{ github.ref_name }}.
@@ -85,3 +85,4 @@ jobs:
             ./release/windows/game_of_life.exe
           draft: false
           prerelease: false
+          allowUpdates: true
