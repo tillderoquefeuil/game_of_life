@@ -15,12 +15,18 @@ use term::*;
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
-    /// Size of the board, default is the terminal size
-    #[arg(short, long)]
-    size: Option<usize>,
-    /// Maximum size of the board, default is the terminal size
+    /// Width of the board, default is the terminal width
     #[arg(long)]
-    max_size: Option<usize>,
+    width: Option<usize>,
+    /// Height of the board, default is the terminal height
+    #[arg(long)]
+    height: Option<usize>,
+    /// Maximum width of the board, default is the terminal width
+    #[arg(long)]
+    max_width: Option<usize>,
+    /// Maximum height of the board, default is the terminal height
+    #[arg(long)]
+    max_height: Option<usize>,
     /// Probability of initial cell to be alive
     #[arg(short, long, default_value_t = 0.5)]
     probability: f32,
@@ -46,16 +52,21 @@ fn main() -> Result<()> {
     init_term()?;
 
     let term_size = terminal::size()?;
-    let min_size = u16::min(term_size.0/2, term_size.1) as usize - 3;
+
+    let min_width = (term_size.0/2) as usize;
+    let min_height = term_size.1 as usize - 3;
 
     let char_rx = read_char();
 
     let mut delay = args.delay;
-    let size = args.size.unwrap_or(min_size);
-    let max_size = args.max_size.unwrap_or(min_size);
+    let width = args.width.unwrap_or(min_width);
+    let max_width = args.max_width.unwrap_or(min_width);
+    let height = args.height.unwrap_or(min_height);
+    let max_height = args.max_height.unwrap_or(min_height);
 
-    let mut board = Board::new(size)
-        .with_max_size(max_size)
+    let mut board = Board::new(width, height)
+        .with_max_width(max_width)
+        .with_max_height(max_height)
         .with_min_to_born(args.min_to_born)
         .with_max_to_born(args.max_to_born)
         .with_min_to_stay_alive(args.min_to_stay_alive)
@@ -97,7 +108,7 @@ fn main() -> Result<()> {
                         clear_line().unwrap();
                     });
                     jump_line()?;
-                    println!("Press SPACE to toggle play/pause, LEFT to slow down, RIGHT to delay up and ESC to quit");
+                    println!("Press SPACE to toggle play/pause, LEFT/RIGHT to change speed and ESC to quit");
 
                     if !board.next() {
                         break;

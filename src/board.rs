@@ -10,7 +10,8 @@ const MAX_TO_STAY_ALIVE: u32 = 3;
 
 pub struct Board {
     current: Vec<Vec<bool>>,
-    max_size: Option<usize>,
+    max_width: Option<usize>,
+    max_height: Option<usize>,
     min_to_born: u32,
     max_to_born: u32,
     min_to_stay_alive: u32,
@@ -19,16 +20,18 @@ pub struct Board {
 
 impl Board {
     pub fn new(
-        size: usize,
+        width: usize,
+        height: usize,
     ) -> Self {
 
-        if size < 2 {
-            panic!("Board size has to be greater than 1");
+        if width < 2 || height < 2 {
+            panic!("Board width/height has to be greater than 1");
         }
 
         Self {
-            current: vec![vec![false; size]; size],
-            max_size: None,
+            current: vec![vec![false; width]; height],
+            max_width: None,
+            max_height: None,
             min_to_born: MIN_TO_BORN,
             max_to_born: MAX_TO_BORN,
             min_to_stay_alive: MIN_TO_STAY_ALIVE,
@@ -56,8 +59,13 @@ impl Board {
         self
     }
 
-    pub fn with_max_size(mut self, max_size: usize) -> Self {
-        self.max_size = Some(max_size);
+    pub fn with_max_width(mut self, max_width: usize) -> Self {
+        self.max_width = Some(max_width);
+        self
+    }
+
+    pub fn with_max_height(mut self, max_height: usize) -> Self {
+        self.max_height = Some(max_height);
         self
     }
 
@@ -158,12 +166,16 @@ impl Board {
     }
 
     fn resizing_board(&mut self) {
-        let max_size = match self.max_size {
-            Some(size) => size,
+        let max_width = match self.max_width {
+            Some(width) => width,
+            None => usize::MAX,
+        };
+        let max_height = match self.max_height {
+            Some(height) => height,
             None => usize::MAX,
         };
 
-        if self.height() < max_size {
+        if self.height() < max_height {
                 // first row
             if self.current.first().unwrap().iter().any(|cell| *cell) {
                 self.prepend_row();
@@ -173,7 +185,7 @@ impl Board {
                 self.append_row();
             }
         }
-        if self.width() < max_size {
+        if self.width() < max_width {
             // first col
             if self.current.iter().map(|row| row.first().unwrap()).any(|cell| *cell) {
                 self.prepend_col();
